@@ -32,7 +32,7 @@ export class App extends React.Component {
               <p>{book.year}</p>
               <p>{book.genre}</p>
               <p>Favourite: {book.favourite ? '+' : '-'}</p>
-              <img src={book.cover} alt={book.title} width="500" />
+              <img src={book.cover} alt={book.title} width="270" />
             </li>
           ))}
         </ul>
