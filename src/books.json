@@ -25,7 +25,7 @@
       "year": 1932,
       "genre": "novel",
       "favourite": true,
-      "cover": "https://images.gr-assets.com/books/1424030967l/5129.jpg"
+      "cover": "https://images.gr-assets.com/books/1490528560l/4671.jpg"
     },
     {
       "title": "Pride and Prejudice",
@@ -61,7 +61,7 @@
       "year": 1945,
       "genre": "novel",
       "favourite": false,
-      "cover": "https://images.gr-assets.com/books/1424039022l/170448.jpg"
+      "cover": "https://images.gr-assets.com/books/1490528560l/4671.jpg"
     },
     {
       "title": "The Lord of the Rings",
@@ -70,7 +70,7 @@
       "year": 1954,
       "genre": "fantasy",
       "favourite": true,
-      "cover": "https://images.gr-assets.com/books/1368749842l/33.jpg"
+      "cover": "https://images.gr-assets.com/books/1490528560l/4671.jpg"
     },
     {
       "title": "Harry Potter and the Philosopher's Stone",
@@ -88,7 +88,7 @@
       "year": 1937,
       "genre": "fantasy",
       "favourite": true,
-      "cover": "https://images.gr-assets.com/books/1448613663l/5907.jpg"
+      "cover": "https://images.gr-assets.com/books/1490528560l/4671.jpg"
     }
   ]
 }

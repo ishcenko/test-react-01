@@ -7,6 +7,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  border: 3px solid darkmagenta;
+  width: 75%;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 50px;
+  background: rgba(100, 175, 255, 0.1);
 }
 
 code {

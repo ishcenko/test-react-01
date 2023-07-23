@@ -17,10 +17,20 @@ export class App extends React.Component {
     });
   };
 
+  onAddBook = bookData => {
+    console.log(bookData);
+    const finalBook = {
+      ...bookData,
+      id: (Math.random() * 10).toString(),
+    };
+    this.setState({
+      books: [finalBook, ...this.state.books],
+    });
+  };
   render() {
     return (
       <div>
-        <BookForm />
+        <BookForm title="BookForm" onAddBook={this.onAddBook} />
         <ul>
           {this.state.books.map(book => (
             <li key={book.id}>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'; // Імпортуємо компонент React
 import { StyledForm } from './styled'; // Імпортуємо компонент StyledForm
-
+import PropTypes from 'prop-types';
 export default class BookForm extends Component {
   state = {
     title: '',
@@ -13,53 +13,85 @@ export default class BookForm extends Component {
 
   handleInputChange = event => {
     console.log(event.target.name);
+    if (event.target.type === 'checked') {
+      this.setState({
+        [event.target.name]: event.target.checked,
+      });
+      return;
+    }
     this.setState({
-      [event.target.name]: event.target.name,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const bookData = {
+      ...this.state,
+      year: Number.parseInt(this.state.year),
+      // title: this.state.title,
+      // author: this.state.author,
+      // genre: this.state.genre,
+      // favourite: this.state.favourite,
+      // cover: this.state.cover,
+    };
+    this.props.onAddBook(bookData);
+    this.setState({
+      title: '',
+      author: '',
+      year: '',
+      genre: '',
+      favourite: false,
+      cover: 'https://images.gr-assets.com/books/1361975680l/2657.jpg',
     });
   };
 
   render() {
     return (
-      <StyledForm>
-        <h2>BookForm</h2>
+      <StyledForm onSubmit={this.handleSubmit}>
+        <h2>{this.props.title}</h2>
         <label className="form-label">
-          <span>title:</span>
+          <span className="subtitle">title:</span>
           <input
             onChange={this.handleInputChange}
             value={this.state.title}
             name="title"
             type="text"
+            required
           />
         </label>
         <label className="form-label">
-          <span>author:</span>
+          <span className="subtitle">author:</span>
           <input
             onChange={this.handleInputChange}
             value={this.state.author}
             name="author"
             type="text"
+            required
           />
         </label>
         <label className="form-label">
-          <span>year:</span>
+          <span className="subtitle">year:</span>
           <input
             onChange={this.handleInputChange}
             value={this.state.year}
             name="year"
-            type="number"
+            type="text"
+            required
           />
         </label>
         <label className="form-label">
-          <span>genre:</span>
+          <span className="subtitle">genre:</span>
           <input
             onChange={this.handleInputChange}
             value={this.state.genre}
             name="genre"
             type="text"
+            required
           />
         </label>
         <label className="form-label">
-          <span>favourite:</span>
+          <span className="subtitle">favourite:</span>
           <input
             onChange={this.handleInputChange}
             checked={this.state.favourite}
@@ -74,3 +106,8 @@ export default class BookForm extends Component {
     );
   }
 }
+
+BookForm.propTypes = {
+  title: PropTypes.string.isRequired,
+  onAddBook: PropTypes.func.isRequired,
+};
