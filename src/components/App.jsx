@@ -2,6 +2,7 @@ import React from 'react';
 import BookForm from './BookForm/BookForm';
 // import { styled } from './BookingForm/styled'; // Правильний шлях до BookingForm
 import booksData from '../books.json'; // Правильний шлях до books.json
+import BookList from './BookList/BookList';
 
 const books = booksData.books;
 
@@ -31,21 +32,7 @@ export class App extends React.Component {
     return (
       <div>
         <BookForm title="BookForm" onAddBook={this.onAddBook} />
-        <ul>
-          {this.state.books.map(book => (
-            <li key={book.id}>
-              <button onClick={() => this.onRemoveBook(book.id)}>
-                &times;
-              </button>
-              <h3>{book.title}</h3>
-              <h3>{book.author}</h3>
-              <p>{book.year}</p>
-              <p>{book.genre}</p>
-              <p>Favourite: {book.favourite ? '+' : '-'}</p>
-              <img src={book.cover} alt={book.title} width="270" />
-            </li>
-          ))}
-        </ul>
+        <BookList onRemoveBook={this.onRemoveBook} books={this.state.books} />
       </div>
     );
   }
