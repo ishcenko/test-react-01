@@ -30,6 +30,7 @@ export class App extends React.Component {
     posts: [],
     isLoading: false,
     error: null,
+    selectedPostId: null,
   };
 
   // onRemoveBook = bookId => {
@@ -66,6 +67,10 @@ export class App extends React.Component {
         visibleData: null,
       },
     });
+  };
+
+  onSelectPostID = postId => {
+    this.setState({ selectedPostId: postId });
   };
 
   async componentDidMount() {
@@ -131,11 +136,17 @@ export class App extends React.Component {
         {this.state.posts.length > 0 &&
           this.state.posts.map(posts => {
             return (
-              <div key={posts.id}>
+              <button
+                type="button"
+                className="post"
+                s
+                onClick={() => this.onSelectPostID(posts.id)}
+                key={posts.id}
+              >
                 <strong>Id: {posts.id}</strong>
                 <h4>{posts.title}</h4>
                 <p>{posts.body}</p>
-              </div>
+              </button>
             );
           })}
 
