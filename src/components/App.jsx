@@ -5,9 +5,21 @@ import Modal from './Modal/Modal';
 // import booksData from '../books.json'; // Правильний шлях до books.json
 // import BookList from './BookList/BookList';
 import { fetchPost } from 'servises/api';
+import { MutatingDots } from 'react-loader-spinner';
+import { ToastContainer, toast } from 'react-toastify';
 
 // const books = booksData.books;
 
+const toastConfig = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'dark',
+};
 export class App extends React.Component {
   state = {
     // books: books,
@@ -58,13 +70,18 @@ export class App extends React.Component {
 
   async componentDidMount() {
     try {
+      this.setState({ isLoading: true });
       const posts = await fetchPost();
-      console.log(posts);
+      // console.log(posts);
       this.setState({ posts });
+      toast.success('Your posts were successfuli fetched!', toastConfig);
     } catch (error) {
+      this.setState({ error: error.message });
+      toast.error(error.message, toastConfig);
     } finally {
+      this.setState({ isLoading: false });
     }
-    console.log('Mount');
+    // console.log('Mount');
 
     // const stringifiedBooks = localStorage.getItem('books');
     // const books = JSON.parse(stringifiedBooks) ?? [];
@@ -95,6 +112,22 @@ export class App extends React.Component {
             visibleData={this.state.modal.visibleData}
           />
         )}
+        {this.state.error !== null && (
+          <p className="c-error"> Oops {this.state.error}</p>
+        )}
+        {this.state.isLoading && (
+          <MutatingDots
+            height="100"
+            width="100"
+            color="#f4e806"
+            secondaryColor="#0345f9"
+            radius="12.5"
+            ariaLabel="mutating-dots-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        )}
         {this.state.posts.length > 0 &&
           this.state.posts.map(posts => {
             return (
@@ -111,6 +144,18 @@ export class App extends React.Component {
           onOpenModal={this.onOpenModal}
           onRemoveBook={this.onRemoveBook}
           books={this.state.books}
+        /> */}
+        {/* <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
         /> */}
       </div>
     );
