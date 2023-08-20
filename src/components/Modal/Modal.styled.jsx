@@ -19,4 +19,5 @@ export const StyledModal = styled.div`
   padding: 25px;
   width: 360px;
   height: 250px;
+  overflow: auto;
 `;

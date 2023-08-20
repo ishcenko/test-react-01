@@ -4,9 +4,9 @@ import Modal from './Modal/Modal';
 // import { styled } from './BookingForm/styled'; // Правильний шлях до BookingForm
 // import booksData from '../books.json'; // Правильний шлях до books.json
 // import BookList from './BookList/BookList';
-import { fetchPost } from 'servises/api';
+import { fetchPost, fetchPostDetails } from 'servises/api';
 import { MutatingDots } from 'react-loader-spinner';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 // const books = booksData.books;
 
@@ -93,9 +93,24 @@ export class App extends React.Component {
     // this.setState({ books });
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (prevState.modal.isOpen !== this.state.isOpen) {
-      console.log('Відкрив або закрив модалку');
+      // console.log('Відкрив або закрив модалку');
+    }
+    if (prevState.selectedPostId !== this.state.selectedPostId) {
+      console.log('Selected post id: ' + this.state.selectedPostId);
+      try {
+        this.setState({ isLoading: true });
+        const postDetails = await fetchPostDetails(this.state.selectedPostId);
+        // console.log('PostDetails: ', postDetails);
+        this.setState({ modal: { isOpen: true, visibleData: postDetails } });
+        toast.success('Post details were successfuli fetched!', toastConfig);
+      } catch (error) {
+        this.setState({ error: error.message });
+        toast.error(error.message, toastConfig);
+      } finally {
+        this.setState({ isLoading: false });
+      }
     }
 
     // if (prevState.books.length !== this.state.books.length) {
@@ -103,8 +118,8 @@ export class App extends React.Component {
     //   localStorage.setItem('books', stringifiedBooks);
     // }
 
-    console.log(prevState.modal);
-    console.log(this.state.modal);
+    // console.log(prevState.modal);
+    // console.log(this.state.modal);
   }
 
   render() {
