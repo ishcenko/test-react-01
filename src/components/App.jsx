@@ -98,11 +98,11 @@ export class App extends React.Component {
       // console.log('Відкрив або закрив модалку');
     }
     if (prevState.selectedPostId !== this.state.selectedPostId) {
-      console.log('Selected post id: ' + this.state.selectedPostId);
+      // console.log('Selected post id: ' + this.state.selectedPostId);
       try {
         this.setState({ isLoading: true });
         const postDetails = await fetchPostDetails(this.state.selectedPostId);
-        // console.log('PostDetails: ', postDetails);
+        console.log('PostDetails: ', postDetails);
         this.setState({ modal: { isOpen: true, visibleData: postDetails } });
         toast.success('Post details were successfuli fetched!', toastConfig);
       } catch (error) {
