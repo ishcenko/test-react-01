@@ -1,51 +1,188 @@
 import React from 'react';
-import BookForm from './BookForm/BookForm';
+// import BookForm from './BookForm/BookForm';
+import Modal from './Modal/Modal';
 // import { styled } from './BookingForm/styled'; // Правильний шлях до BookingForm
-import booksData from '../books.json'; // Правильний шлях до books.json
+// import booksData from '../books.json'; // Правильний шлях до books.json
+// import BookList from './BookList/BookList';
+import { fetchPost, fetchPostDetails } from 'servises/api';
+import { MutatingDots } from 'react-loader-spinner';
+import { toast } from 'react-toastify';
 
-const books = booksData.books;
+// const books = booksData.books;
 
+const toastConfig = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'dark',
+};
 export class App extends React.Component {
   state = {
-    books: books,
+    // books: books,
+    modal: {
+      isOpen: false,
+      visibleData: null,
+    },
+    posts: [],
+    isLoading: false,
+    error: null,
+    selectedPostId: null,
   };
 
-  onRemoveBook = bookId => {
-    console.log(bookId);
+  // onRemoveBook = bookId => {
+  //   // console.log(bookId);
+  //   this.setState({
+  //     books: this.state.books.filter(book => book.id !== bookId),
+  //   });
+  // };
+
+  // onAddBook = bookData => {
+  //   console.log(bookData);
+  //   const finalBook = {
+  //     ...bookData,
+  //     id: (Math.random() * 10).toString(),
+  //   };
+  //   this.setState({
+  //     books: [finalBook, ...this.state.books],
+  //   });
+  // };
+
+  onOpenModal = data => {
     this.setState({
-      books: this.state.books.filter(book => book.id !== bookId),
+      modal: {
+        isOpen: true,
+        visibleData: data,
+      },
     });
   };
 
-  onAddBook = bookData => {
-    console.log(bookData);
-    const finalBook = {
-      ...bookData,
-      id: (Math.random() * 10).toString(),
-    };
+  onCloseModal = () => {
     this.setState({
-      books: [finalBook, ...this.state.books],
+      modal: {
+        isOpen: false,
+        visibleData: null,
+      },
     });
   };
+
+  onSelectPostID = postId => {
+    this.setState({ selectedPostId: postId });
+  };
+
+  async componentDidMount() {
+    try {
+      this.setState({ isLoading: true });
+      const posts = await fetchPost();
+      // console.log(posts);
+      this.setState({ posts });
+      toast.success('Your posts were successfuli fetched!', toastConfig);
+    } catch (error) {
+      this.setState({ error: error.message });
+      toast.error(error.message, toastConfig);
+    } finally {
+      this.setState({ isLoading: false });
+    }
+    // console.log('Mount');
+
+    // const stringifiedBooks = localStorage.getItem('books');
+    // const books = JSON.parse(stringifiedBooks) ?? [];
+    // this.setState({ books });
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.modal.isOpen !== this.state.isOpen) {
+      // console.log('Відкрив або закрив модалку');
+    }
+    if (prevState.selectedPostId !== this.state.selectedPostId) {
+      // console.log('Selected post id: ' + this.state.selectedPostId);
+      try {
+        this.setState({ isLoading: true });
+        const postDetails = await fetchPostDetails(this.state.selectedPostId);
+        console.log('PostDetails: ', postDetails);
+        this.setState({ modal: { isOpen: true, visibleData: postDetails } });
+        toast.success('Post details were successfuli fetched!', toastConfig);
+      } catch (error) {
+        this.setState({ error: error.message });
+        toast.error(error.message, toastConfig);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+
+    // if (prevState.books.length !== this.state.books.length) {
+    //   const stringifiedBooks = JSON.stringify(this.state.books);
+    //   localStorage.setItem('books', stringifiedBooks);
+    // }
+
+    // console.log(prevState.modal);
+    // console.log(this.state.modal);
+  }
+
   render() {
     return (
       <div>
-        <BookForm title="BookForm" onAddBook={this.onAddBook} />
-        <ul>
-          {this.state.books.map(book => (
-            <li key={book.id}>
-              <button onClick={() => this.onRemoveBook(book.id)}>
-                &times;
+        <h1>Books 📚</h1>
+        {this.state.modal.isOpen && (
+          <Modal
+            onCloseModal={this.onCloseModal}
+            visibleData={this.state.modal.visibleData}
+          />
+        )}
+        {this.state.error !== null && (
+          <p className="c-error"> Oops {this.state.error}</p>
+        )}
+        {this.state.isLoading && (
+          <MutatingDots
+            height="100"
+            width="100"
+            color="#f4e806"
+            secondaryColor="#0345f9"
+            radius="12.5"
+            ariaLabel="mutating-dots-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        )}
+        {this.state.posts.length > 0 &&
+          this.state.posts.map(posts => {
+            return (
+              <button
+                type="button"
+                className="post"
+                s
+                onClick={() => this.onSelectPostID(posts.id)}
+                key={posts.id}
+              >
+                <strong>Id: {posts.id}</strong>
+                <h4>{posts.title}</h4>
+                <p>{posts.body}</p>
               </button>
-              <h3>{book.title}</h3>
-              <h3>{book.author}</h3>
-              <p>{book.year}</p>
-              <p>{book.genre}</p>
-              <p>Favourite: {book.favourite ? '+' : '-'}</p>
-              <img src={book.cover} alt={book.title} width="270" />
-            </li>
-          ))}
-        </ul>
+            );
+          })}
+
+        {/* <BookForm title="BooksForm" onAddBook={this.onAddBook} /> */}
+        {/* <BookList
+          onOpenModal={this.onOpenModal}
+          onRemoveBook={this.onRemoveBook}
+          books={this.state.books}
+        /> */}
+        {/* <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        /> */}
       </div>
     );
   }
