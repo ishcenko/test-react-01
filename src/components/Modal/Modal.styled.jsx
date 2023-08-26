@@ -10,7 +10,7 @@ export const StyledOverlay = styled.div`
   .close-modal {
     background-color: aquamarine;
     padding: 8px 10px;
-    margin-left: 30 0px;
+    margin-left: 300px;
   }
   .tab-btn.active {
     background-color: #0808ee;
