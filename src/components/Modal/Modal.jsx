@@ -1,43 +1,81 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyledModal, StyledOverlay } from './Modal.styled';
 import PropTypes from 'prop-types';
 
-class Modal extends React.Component {
-  handleKeyDown = event => {
+const Modal = ({ visibleData, onCloseModal }) => {
+  const [dataType, setDataType] = useState('emails');
+  const handleKeyDown = event => {
     if (event.code === 'Escape') {
-      this.props.onCloseModal();
+      onCloseModal();
     }
   };
 
-  handleOverlayClick = event => {
+  const handleOverlayClick = event => {
     if (event.currentTarget === event.target) {
-      this.props.onCloseModal();
+      onCloseModal();
     }
   };
+  const onSetDataType = newDataType => {
+    setDataType(newDataType);
+  };
+  // componentDidMount() {
+  //   console.log('Модалка успішно змонтована!');
+  //   window.addEventListener('keudown', this.handleKeyDown);
+  // }
 
-  componentDidMount() {
-    console.log('Модалка успішно змонтована!');
-    window.addEventListener('keudown', this.handleKeyDown);
-  }
+  // componentWillUnmount() {
+  //   console.log('Модалка видалена!');
+  //   window.removeEventListener('keydown', this.handleKeyDown);
+  // }
 
-  componentWillUnmount() {
-    console.log('Модалка видалена!');
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  render() {
-    return (
-      <StyledOverlay onClick={this.handleOverlayClick}>
-        <StyledModal>
-          <button onClick={this.props.onCloseModal}>&times;</button>
+  return (
+    <StyledOverlay onClick={handleOverlayClick}>
+      <StyledModal>
+        <button className="close-modal" onClick={onCloseModal}>
+          &times;
+        </button>
+        <br />
+        <div>
+          <button
+            className={`tab-btn ${dataType === 'emails' ? 'active' : ''}`}
+            onClick={() => onSetDataType('emails')}
+            type="button"
+          >
+            Emails
+          </button>
           <br />
-          {JSON.stringify(this.props.visibleData, null, 7)}
-          Modal
-        </StyledModal>
-      </StyledOverlay>
-    );
-  }
-}
+          <button
+            className={`tab-btn ${dataType === 'users' ? 'active' : ''}`}
+            onClick={() => onSetDataType('users')}
+            type="button"
+          >
+            Users
+          </button>
+        </div>
+        <h2>Active DataType: {dataType}</h2>
+        {dataType === 'emails' && (
+          <ul>
+            {Array.isArray(visibleData) &&
+              visibleData.map(comment => (
+                <li key={comment.id}>{comment.email}</li>
+              ))}{' '}
+          </ul>
+        )}
+        {dataType === 'users' && (
+          <ul>
+            {Array.isArray(visibleData) &&
+              visibleData.map(comment => (
+                <li key={comment.id}>{comment.name}</li>
+              ))}{' '}
+          </ul>
+        )}
+
+        {/* {JSON.stringify(visibleData, null, 7)} */}
+        {/* Modal */}
+      </StyledModal>
+    </StyledOverlay>
+  );
+};
 
 Modal.propTypes = {
   visibleData: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
