@@ -1,38 +1,29 @@
 import styled from 'styled-components';
 
 export const StyledForm = styled.form`
-  border: 2px;
   display: flex;
   flex-direction: column;
   max-width: 350px;
-  width: 50%;
+  width: 100%;
   margin: 20px auto 25px;
-  gap: 22px;
+  gap: 16px;
 
   .form-label {
     display: flex;
-    gap: 15px;
+    gap: 10px;
   }
   .radio-group {
     display: flex;
     align-items: baseline;
-    gap: 19px;
+    gap: 10px;
   }
-  .subtitle {
-    color: brown;
-    font-size: 22px;
-  }
+
   .form-btn {
-    border: 1px solid darkcyan;
-    background: #fff000;
-    color: blue;
-    font-size: 22px;
+    border: none;
+    background: #000;
+    color: #fff;
     padding: 15px;
     border-radius: 10px;
     cursor: pointer;
-    &:hover {
-      color: green;
-      background: orangered;
-    }
   }
 `;

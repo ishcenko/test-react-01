@@ -1,17 +1,18 @@
-import React from 'react';
-// import BookForm from './BookForm/BookForm';
-import Modal from './Modal/Modal';
-// import { styled } from './BookingForm/styled'; // Правильний шлях до BookingForm
-// import booksData from '../books.json'; // Правильний шлях до books.json
-// import BookList from './BookList/BookList';
-import { fetchPost, fetchPostDetails } from 'servises/api';
+import React, { useEffect, useState } from 'react';
 import { MutatingDots } from 'react-loader-spinner';
 import { toast } from 'react-toastify';
+
+// import BookForm from './BookForm/BookForm';
+// import BookList from './BookList/BookList';
+import Modal from './Modal/Modal';
+
+// import booksData from '../books.json';
+import { fetchPostDetails, fetchPosts } from 'services/api';
 
 // const books = booksData.books;
 
 const toastConfig = {
-  position: 'top-right',
+  position: 'top-center',
   autoClose: 5000,
   hideProgressBar: false,
   closeOnClick: true,
@@ -20,170 +21,113 @@ const toastConfig = {
   progress: undefined,
   theme: 'dark',
 };
-export class App extends React.Component {
-  state = {
-    // books: books,
-    modal: {
+
+export const App = () => {
+  const [modal, setModal] = useState({ isOpen: false, visibleData: null });
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+
+  const onOpenModal = data => {
+    setModal({
+      isOpen: true,
+      visibleData: data,
+    });
+  };
+
+  const onCloseModal = () => {
+    setModal({
       isOpen: false,
       visibleData: null,
-    },
-    posts: [],
-    isLoading: false,
-    error: null,
-    selectedPostId: null,
-  };
-
-  // onRemoveBook = bookId => {
-  //   // console.log(bookId);
-  //   this.setState({
-  //     books: this.state.books.filter(book => book.id !== bookId),
-  //   });
-  // };
-
-  // onAddBook = bookData => {
-  //   console.log(bookData);
-  //   const finalBook = {
-  //     ...bookData,
-  //     id: (Math.random() * 10).toString(),
-  //   };
-  //   this.setState({
-  //     books: [finalBook, ...this.state.books],
-  //   });
-  // };
-
-  onOpenModal = data => {
-    this.setState({
-      modal: {
-        isOpen: true,
-        visibleData: data,
-      },
     });
   };
 
-  onCloseModal = () => {
-    this.setState({
-      modal: {
-        isOpen: false,
-        visibleData: null,
-      },
-    });
+  const onSelectPostId = postId => {
+    setSelectedPostId(postId);
   };
 
-  onSelectPostID = postId => {
-    this.setState({ selectedPostId: postId });
-  };
-
-  async componentDidMount() {
-    try {
-      this.setState({ isLoading: true });
-      const posts = await fetchPost();
-      // console.log(posts);
-      this.setState({ posts });
-      toast.success('Your posts were successfuli fetched!', toastConfig);
-    } catch (error) {
-      this.setState({ error: error.message });
-      toast.error(error.message, toastConfig);
-    } finally {
-      this.setState({ isLoading: false });
-    }
-    // console.log('Mount');
-
-    // const stringifiedBooks = localStorage.getItem('books');
-    // const books = JSON.parse(stringifiedBooks) ?? [];
-    // this.setState({ books });
-  }
-
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevState.modal.isOpen !== this.state.isOpen) {
-      // console.log('Відкрив або закрив модалку');
-    }
-    if (prevState.selectedPostId !== this.state.selectedPostId) {
-      // console.log('Selected post id: ' + this.state.selectedPostId);
+  useEffect(() => {
+    const fetchPostsData = async () => {
       try {
-        this.setState({ isLoading: true });
-        const postDetails = await fetchPostDetails(this.state.selectedPostId);
-        console.log('PostDetails: ', postDetails);
-        this.setState({ modal: { isOpen: true, visibleData: postDetails } });
-        toast.success('Post details were successfuli fetched!', toastConfig);
+        setIsLoading(true);
+
+        const posts = await fetchPosts();
+
+        setPosts(posts);
+        toast.success('Your posts were successfully fetched!', toastConfig);
       } catch (error) {
-        this.setState({ error: error.message });
+        setError(error.message);
         toast.error(error.message, toastConfig);
       } finally {
-        this.setState({ isLoading: false });
+        setIsLoading(false);
       }
-    }
+    };
 
-    // if (prevState.books.length !== this.state.books.length) {
-    //   const stringifiedBooks = JSON.stringify(this.state.books);
-    //   localStorage.setItem('books', stringifiedBooks);
-    // }
+    fetchPostsData();
+  }, []);
 
-    // console.log(prevState.modal);
-    // console.log(this.state.modal);
-  }
+  useEffect(() => {
+    if (!selectedPostId) return;
 
-  render() {
-    return (
-      <div>
-        <h1>Books 📚</h1>
-        {this.state.modal.isOpen && (
-          <Modal
-            onCloseModal={this.onCloseModal}
-            visibleData={this.state.modal.visibleData}
-          />
-        )}
-        {this.state.error !== null && (
-          <p className="c-error"> Oops {this.state.error}</p>
-        )}
-        {this.state.isLoading && (
-          <MutatingDots
-            height="100"
-            width="100"
-            color="#f4e806"
-            secondaryColor="#0345f9"
-            radius="12.5"
-            ariaLabel="mutating-dots-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        )}
-        {this.state.posts.length > 0 &&
-          this.state.posts.map(posts => {
-            return (
-              <button
-                type="button"
-                className="post"
-                s
-                onClick={() => this.onSelectPostID(posts.id)}
-                key={posts.id}
-              >
-                <strong>Id: {posts.id}</strong>
-                <h4>{posts.title}</h4>
-                <p>{posts.body}</p>
-              </button>
-            );
-          })}
+    const fetchPostData = async postId => {
+      try {
+        setIsLoading(true);
 
-        {/* <BookForm title="BooksForm" onAddBook={this.onAddBook} /> */}
-        {/* <BookList
-          onOpenModal={this.onOpenModal}
-          onRemoveBook={this.onRemoveBook}
-          books={this.state.books}
-        /> */}
-        {/* <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        /> */}
-      </div>
-    );
-  }
-}
+        const postDetails = await fetchPostDetails(postId);
+
+        onOpenModal(postDetails);
+        toast.success('Post details were successfully fetched!', toastConfig);
+      } catch (error) {
+        setError(error.message);
+        toast.error(error.message, toastConfig);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPostData(selectedPostId);
+  }, [selectedPostId]);
+
+  return (
+    <div>
+      <h1>Мій олюблений Реакт😂</h1>
+      {modal.isOpen && (
+        <Modal onCloseModal={onCloseModal} visibleData={modal.visibleData} />
+      )}
+      {error !== null && (
+        <p className="c-error">
+          Oops, some error occured. Please, try again later. Error: {error}
+        </p>
+      )}
+      {isLoading && (
+        <MutatingDots
+          height="100"
+          width="100"
+          color="#5800a5"
+          secondaryColor="#e08e00"
+          radius="12.5"
+          ariaLabel="mutating-dots-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+        />
+      )}
+      {posts.length > 0 &&
+        posts.map(post => {
+          return (
+            <button
+              className="post"
+              onClick={() => onSelectPostId(post.id)}
+              type="button"
+              key={post.id}
+            >
+              <strong>Id: {post.id}</strong>
+              <h4>{post.title}</h4>
+              <p>{post.body}</p>
+            </button>
+          );
+        })}
+    </div>
+  );
+};

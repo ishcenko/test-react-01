@@ -1,6 +1,17 @@
-import React, { Component } from 'react'; // Імпортуємо компонент React
-import { StyledForm } from './styled'; // Імпортуємо компонент StyledForm
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { StyledForm } from './styled';
+/*
+{
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "year": 1960,
+        "genre": "novel",
+        "favourite": false,
+        "cover": "https://images.gr-assets.com/books/1361975680l/2657.jpg"
+      },
+*/
+
 export default class BookForm extends Component {
   state = {
     title: '',
@@ -12,13 +23,14 @@ export default class BookForm extends Component {
   };
 
   handleInputChange = event => {
-    console.log(event.target.name);
-    if (event.target.type === 'checked') {
+    // console.log(event.target.name);
+    if (event.target.type === 'checkbox') {
       this.setState({
         [event.target.name]: event.target.checked,
       });
       return;
     }
+
     this.setState({
       [event.target.name]: event.target.value,
     });
@@ -26,16 +38,14 @@ export default class BookForm extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+
     const bookData = {
       ...this.state,
       year: Number.parseInt(this.state.year),
-      // title: this.state.title,
-      // author: this.state.author,
-      // genre: this.state.genre,
-      // favourite: this.state.favourite,
-      // cover: this.state.cover,
     };
+
     this.props.onAddBook(bookData);
+
     this.setState({
       title: '',
       author: '',
@@ -51,7 +61,7 @@ export default class BookForm extends Component {
       <StyledForm onSubmit={this.handleSubmit}>
         <h2>{this.props.title}</h2>
         <label className="form-label">
-          <span className="subtitle">title:</span>
+          <span>title:</span>
           <input
             onChange={this.handleInputChange}
             value={this.state.title}
@@ -61,7 +71,7 @@ export default class BookForm extends Component {
           />
         </label>
         <label className="form-label">
-          <span className="subtitle">author:</span>
+          <span>author:</span>
           <input
             onChange={this.handleInputChange}
             value={this.state.author}
@@ -71,7 +81,7 @@ export default class BookForm extends Component {
           />
         </label>
         <label className="form-label">
-          <span className="subtitle">year:</span>
+          <span>year:</span>
           <input
             onChange={this.handleInputChange}
             value={this.state.year}
@@ -81,7 +91,7 @@ export default class BookForm extends Component {
           />
         </label>
         <label className="form-label">
-          <span className="subtitle">genre:</span>
+          <span>genre:</span>
           <input
             onChange={this.handleInputChange}
             value={this.state.genre}
@@ -91,7 +101,7 @@ export default class BookForm extends Component {
           />
         </label>
         <label className="form-label">
-          <span className="subtitle">favourite:</span>
+          <span>favourite:</span>
           <input
             onChange={this.handleInputChange}
             checked={this.state.favourite}
