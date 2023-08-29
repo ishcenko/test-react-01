@@ -7,6 +7,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  border: 3px solid darkmagenta;
+  width: 75%;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 50px;
+  background: rgba(100, 175, 255, 0.1);
 }
 
 code {
@@ -15,7 +21,7 @@ code {
 }
 
 .c-error {
-  background-color: rgb(212, 116, 0);
+  background-color: blueviolet;
   color: black;
   padding: 20px 20px;
   width: 100%;
@@ -24,9 +30,24 @@ code {
   justify-content: center;
   font-size: 22px;
 }
+h1 {
+  padding-left: 25px;
+}
+strong {
+  padding-left: 20px;
+}
+p {
+  padding-left: 20px;
+}
+
+h4 {
+  padding-left: 20px;
+}
 
 .post {
   margin-bottom: 35px;
-  background-color: transparent;
-  cursor: pointer;
+  background-color: aquamarine;
+  width: 100%;
+  margin-left: 15px;
+  margin-right: 15px;
 }

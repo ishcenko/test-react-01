@@ -3,27 +3,34 @@ import styled from 'styled-components';
 export const StyledOverlay = styled.div`
   position: fixed;
   left: 0;
-  right: 0;
   top: 0;
+  right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.7);
+  .close-modal {
+    background-color: aquamarine;
+    padding: 8px 10px;
+    margin-left: 300px;
+  }
   .tab-btn.active {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #0808ee;
     color: #fff;
   }
   .tab-btn {
-    background-color: beige;
+    background-color: #edf907;
     color: #000;
   }
 `;
+
 export const StyledModal = styled.div`
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   background-color: #fff;
-  border-radius: 15px;
+  border-radius: 25px;
   padding: 25px;
-  max-height: 550px;
-  overflow-y: auto;
+  width: 360px;
+  height: 450px;
+  overflow: auto;
 `;

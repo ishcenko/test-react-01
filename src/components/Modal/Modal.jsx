@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { StyledModal, StyledOverlay } from './Modal.styled';
 import PropTypes from 'prop-types';
 
-import { StyledModal, StyledOverlay } from './styled';
-
-// а чому ми не можем залишити просто import react from …, а потрібно окремо добавити в {}?
-
 const Modal = ({ visibleData, onCloseModal }) => {
-  const [dataType, setDataType] = useState('emails'); // "emails" | "users"
+  const [dataType, setDataType] = useState('emails');
 
   const handleOverlayClick = event => {
     if (event.currentTarget === event.target) {
@@ -20,30 +17,35 @@ const Modal = ({ visibleData, onCloseModal }) => {
         onCloseModal();
       }
     };
-
-    window.addEventListener('keydown', handleKeyDown);
+    // console.log('Modal');
+    window.addEventListener('keudown', handleKeyDown);
     return () => {
-      // componentWillUnmount
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onCloseModal]); // componentDidMount
+  }, [onCloseModal]);
 
   useEffect(() => {
-    console.log('Current dataType: ', dataType);
-  }, [dataType]); // componentDidMount + componentDidUpdate
-
+    console.log('Current', dataType);
+  }, [dataType]);
+  // const onSetDataType = newDataType => {
+  //   setDataType(newDataType);
+  // };
   // componentDidMount() {
-  //   window.addEventListener('keydown', this.handleKeyDown);
+  //   console.log('Модалка успішно змонтована!');
+  //   window.addEventListener('keudown', this.handleKeyDown);
   // }
 
   // componentWillUnmount() {
+  //   console.log('Модалка видалена!');
   //   window.removeEventListener('keydown', this.handleKeyDown);
   // }
 
   return (
     <StyledOverlay onClick={handleOverlayClick}>
       <StyledModal>
-        <button onClick={onCloseModal}>&times;</button>
+        <button className="close-modal" onClick={onCloseModal}>
+          &times;
+        </button>
         <br />
         <div>
           <button
@@ -53,6 +55,7 @@ const Modal = ({ visibleData, onCloseModal }) => {
           >
             Emails
           </button>
+          <br />
           <button
             className={`tab-btn ${dataType === 'users' ? 'active' : ''}`}
             onClick={() => setDataType('users')}
@@ -68,8 +71,7 @@ const Modal = ({ visibleData, onCloseModal }) => {
             Comments
           </button>
         </div>
-
-        <h2>Active dataType: {dataType}</h2>
+        <h2>Active DataType: {dataType}</h2>
         {dataType === 'emails' && (
           <ul>
             {Array.isArray(visibleData) &&
@@ -86,14 +88,9 @@ const Modal = ({ visibleData, onCloseModal }) => {
               ))}{' '}
           </ul>
         )}
-        {dataType === 'comments' && (
-          <ul>
-            {Array.isArray(visibleData) &&
-              visibleData.map(comment => (
-                <li key={comment.id}>{comment.body}</li>
-              ))}{' '}
-          </ul>
-        )}
+
+        {/* {JSON.stringify(visibleData, null, 7)} */}
+        {/* Modal */}
       </StyledModal>
     </StyledOverlay>
   );
@@ -107,5 +104,4 @@ Modal.propTypes = {
   ]).isRequired,
   onCloseModal: PropTypes.func.isRequired,
 };
-
 export default Modal;
